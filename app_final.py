@@ -24,12 +24,13 @@ sp = iniciar_spot(CLIENT_ID, CLIENT_SECRET)
 # --- CABEÇALHO ---
 col_logo, col_titulo = st.columns([0.2, 0.8])
 with col_logo:
-    # Busca a logo na pasta do GitHub (tenta várias extensões)
-    for f in ["logo.jpg", "logo.png", "logo.jpeg", "logo"]:
-        if os.path.exists(f):
-            st.image(f, width=80)
-            st.markdown("<style>[data-testid='stImage'] img {mix-blend-mode: screen;}</style>", unsafe_allow_html=True)
-            break
+    # Comando direto para a logo que você renomeou
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=80)
+        st.markdown("<style>[data-testid='stImage'] img {mix-blend-mode: screen;}</style>", unsafe_allow_html=True)
+    else:
+        st.write("🔴") # Se aparecer isso, o arquivo logo.png não subiu pro GitHub
+
 with col_titulo:
     st.markdown("<h1 style='margin-top: -10px;'>Unitmetrics</h1>", unsafe_allow_html=True)
 
@@ -42,12 +43,10 @@ if nome:
         items = busca['artists']['items']
         
         if items:
-            # AQUI ESTÁ A CORREÇÃO: Pegamos o primeiro item da lista
             artista = items[0] 
             
             c1, c2 = st.columns([0.3, 0.7])
             with c1:
-                # Verifica se o artista tem imagem e pega a URL da primeira
                 if artista.get('images'):
                     st.image(artista['images'][0]['url'], width=150)
             with c2:
@@ -58,7 +57,6 @@ if nome:
             
             st.divider()
             
-            # --- ÁLBUNS E CRÉDITOS ---
             albuns = sp.artist_albums(artista['id'], album_type='album', limit=5)
             for alb in albuns['items']:
                 ano = alb['release_date'][:4]
